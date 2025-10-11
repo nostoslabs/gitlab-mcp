@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  gitlab-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gitlab-mcp-server
+    restart: unless-stopped
+    environment:
+      # Required: GitLab Personal Access Token
+      GITLAB_PERSONAL_ACCESS_TOKEN: ${GITLAB_PERSONAL_ACCESS_TOKEN}
+
+      # Optional: GitLab API URL (defaults to https://gitlab.com/api/v4)
+      GITLAB_API_URL: ${GITLAB_API_URL:-https://gitlab.com/api/v4}
+
+      # Project control
+      GITLAB_PROJECT_ID: ${GITLAB_PROJECT_ID}
+      GITLAB_ALLOWED_PROJECT_IDS: ${GITLAB_ALLOWED_PROJECT_IDS}
+
+      # Security and features
+      GITLAB_READ_ONLY_MODE: ${GITLAB_READ_ONLY_MODE:-false}
+      GITLAB_DENIED_TOOLS_REGEX: ${GITLAB_DENIED_TOOLS_REGEX}
+
+      # Feature toggles
+      USE_GITLAB_WIKI: ${USE_GITLAB_WIKI:-true}
+      USE_MILESTONE: ${USE_MILESTONE:-true}
+      USE_PIPELINE: ${USE_PIPELINE:-true}
+
+      # Transport configuration (for SSE or HTTP modes)
+      SSE: ${SSE:-false}
+      STREAMABLE_HTTP: ${STREAMABLE_HTTP:-false}
+      HOST: ${HOST:-0.0.0.0}
+      PORT: ${PORT:-8080}
+
+      # Network proxies
+      HTTP_PROXY: ${HTTP_PROXY}
+      HTTPS_PROXY: ${HTTPS_PROXY}
+      NO_PROXY: ${NO_PROXY}
+
+      # Authentication
+      GITLAB_AUTH_COOKIE_PATH: ${GITLAB_AUTH_COOKIE_PATH}
+
+      # Pagination
+      GITLAB_COMMIT_FILES_PER_PAGE: ${GITLAB_COMMIT_FILES_PER_PAGE:-20}
+
+      # Python settings
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      # Mount auth cookie if needed
+      - ${GITLAB_AUTH_COOKIE_PATH:-./auth_cookie}:/app/auth_cookie:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 3
+    networks:
+      - gitlab-mcp-network
+
+networks:
+  gitlab-mcp-network:
+    driver: bridge
