@@ -1,0 +1,47 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '^(old|unused)/'
+      - id: end-of-file-fixer
+        exclude: '^(old|unused)/'
+      - id: check-yaml
+        exclude: '^(old|unused)/'
+      - id: check-added-large-files
+        args: ['--maxkb=1000', '--enforce-all']
+        exclude: '^(uv\.lock|old|unused)/'
+
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        language_version: python3.11
+        exclude: '^(old|unused)/'
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.1.8
+    hooks:
+      - id: ruff
+        args: [--fix]
+        exclude: '^(old|unused)/'
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        exclude: '^(old|unused|tests)/'
+        args: [--no-strict-optional, --allow-untyped-decorators, --ignore-missing-imports, --no-warn-unused-ignores, --no-warn-return-any]
+        additional_dependencies:
+          - pydantic>=2.12.0
+          - pydantic-settings>=2.11.0
+          - httpx>=0.28.1
+          - structlog>=25.4.0
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.6
+    hooks:
+      - id: bandit
+        args: [-ll, -r]
+        files: ^src/
+        exclude: '^(old|unused|tests)/'
