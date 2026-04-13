@@ -14,7 +14,7 @@ dependencies = [
     "pydantic-ai>=1.0.17",
     "pydantic-settings>=2.11.0",
     "python-dotenv>=1.1.1",
-    "python-gitlab>=6.4.0",
+    "python-gitlab>=8.2.0",
     "structlog>=25.4.0",
     "tenacity>=9.1.2",
 ]
