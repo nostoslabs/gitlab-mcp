@@ -247,8 +247,8 @@ async def test_all_phase3_tools_summary():
     print("📊 Phase 3 Tools Registration Summary")
     print("=" * 80)
 
-    tools = await mcp.get_tools()
-    tool_list = list(tools.values())
+    tools = await mcp.list_tools()
+    tool_list = list(tools)
     tool_names = {tool.name for tool in tool_list}
 
     phase3_tools = {

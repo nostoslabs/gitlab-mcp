@@ -144,8 +144,8 @@ async def test_mcp_tool_discovery():
     print("🔍 Testing MCP Tool Discovery")
     print("=" * 80)
 
-    tools = await mcp.get_tools()
-    tool_list = list(tools.values())
+    tools = await mcp.list_tools()
+    tool_list = list(tools)
     tool_names = {tool.name for tool in tool_list}
 
     print(f"\n✓ Found {len(tools)} tools")
